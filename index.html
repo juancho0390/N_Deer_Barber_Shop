@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deer Barber-Shop | Estilo Old School V15</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            background-color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Evita el scroll en el body */
+        }
+        .font-title { font-family: 'Anton', sans-serif; }
+        .font-signature { font-family: 'Great Vibes', cursive; }
+
+        /* Estilo para la navegación activa */
+        .nav-link.active {
+            color: #DC2626; /* text-red-600 */
+        }
+        
+        /* Contenedor principal con fondo */
+        .main-container {
+            background-color: #0a0a0a;
+            position: relative; /* Contexto de posicionamiento para el pseudo-elemento */
+            z-index: 0;
+        }
+        
+        .main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('./imagenes/deer-logo.png'); /* Reemplaza con la ruta a tu logo de fondo */
+            background-size: 40%;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Estilos para las secciones de contenido */
+        .content-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0s linear 0.5s;
+            overflow-y: auto; /* Scroll si el contenido es muy largo */
+            padding-top: 80px; /* Espacio para el header */
+            padding-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-section.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* Animación de carrusel de recomendaciones */
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .scroller {
+            animation: scroll-left 60s linear infinite;
+        }
+        
+        /* Animación para íconos separadores */
+        @keyframes snip {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-15deg) scale(1.1); }
+        }
+        @keyframes slide {
+            0%, 100% { transform: translate(0, 0) rotate(5deg); }
+            50% { transform: translate(2px, -2px) rotate(-5deg); }
+        }
+        .separator-icon .scissors {
+            animation: snip 2.5s ease-in-out infinite;
+        }
+        .separator-icon .razor {
+             animation: slide 3s ease-in-out infinite alternate;
+        }
+        
+        /* Máscara para difuminar los bordes del carrusel */
+        .mask-gradient {
+             -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+        }
+
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-black/70 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-2">
+                <!-- LOGO - Reemplaza 'Ruta/a/tu/logo.png' con la ubicación de tu archivo -->
+                <img src="./imagenes/deer-logo.png" alt="Deer Barber-Shop Logo" class="w-10 h-10">
+                <span class="font-title text-xl text-white tracking-wider">DEER</span>
+            </a>
+            <nav id="main-nav" class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link hover:text-red-600 transition-colors duration-300">Inicio</a>
+                <a href="#nosotros" class="nav-link hover:text-red-600 transition-colors duration-300">Nosotros</a>
+                <a href="#empresa" class="nav-link hover:text-red-600 transition-colors duration-300">La Barbería</a>
+                <a href="#servicios" class="nav-link hover:text-red-600 transition-colors duration-300">Servicios</a>
+                <a href="#recomendaciones" class="nav-link hover:text-red-600 transition-colors duration-300">Recomendaciones</a>
+                <a href="#sedes" class="nav-link hover:text-red-600 transition-colors duration-300">Sedes</a>
+                <a href="#contacto" class="nav-link hover:text-red-600 transition-colors duration-300">Contacto</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col space-y-3">
+            <a href="#home" class="nav-link block hover:text-red-600">Inicio</a>
+            <a href="#nosotros" class="nav-link block hover:text-red-600">Nosotros</a>
+            <a href="#empresa" class="nav-link block hover:text-red-600">La Barbería</a>
+            <a href="#servicios" class="nav-link block hover:text-red-600">Servicios</a>
+            <a href="#recomendaciones" class="nav-link block hover:text-red-600">Recomendaciones</a>
+            <a href="#sedes" class="nav-link block hover:text-red-600">Sedes</a>
+            <a href="#contacto" class="nav-link block hover:text-red-600">Contacto</a>
+        </div>
+    </header>
+
+    <main class="main-container h-screen">
+        <!-- Home Section -->
+        <section id="home" class="content-section">
+            <div class="container mx-auto px-6 text-center text-white bg-black/0 p-8 rounded-lg">
+                <h1 class="font-title text-6xl md:text-8xl lg:text-9xl text-red-700 tracking-widest">DEER BARBER-SHOP</h1>
+                <p class="text-xl md:text-2xl mt-4 tracking-wider">Old School Style</p>
+            </div>
+        </section>
+
+        <!-- Nosotros Section -->
+        <section id="nosotros" class="content-section">
+            <div class="container mx-auto px-6 bg-black/0 p-8 rounded-lg">
+                <div class="text-center mb-12">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">NUESTROS ARTISTAS</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">Un espacio para hombres que valoran la tradición, el estilo y la confianza.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <div id="barber-image" class="rounded-full w-64 h-64 md:w-80 md:h-80 mx-auto bg-cover bg-center border-4 border-red-700 shadow-lg shadow-red-900/20 transition-all duration-500"></div>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h3 id="barber-name" class="font-title text-5xl md:text-6xl text-white transition-opacity duration-500"></h3>
+                        <p id="barber-description" class="mt-4 mb-6 text-gray-300 leading-relaxed transition-opacity duration-500"></p>
+                        <p id="barber-signature" class="font-signature text-6xl text-red-600 transition-opacity duration-500"></p>
+                        <div id="barber-selectors" class="mt-8 flex flex-wrap justify-center md:justify-start gap-4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empresa Section -->
+        <section id="empresa" class="content-section">
+            <div class="container mx-auto px-6 bg-black/0 p-8 rounded-lg">
+                <div class="text-center mb-12">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">MÁS QUE UNA BARBERÍA</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">Somos un pilar de la comunidad, un refugio del estilo masculino.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1 text-center md:text-left">
+                        <h3 class="font-title text-3xl text-white mb-4">Nuestra Filosofía</h3>
+                        <p class="text-gray-300 leading-relaxed mb-6">En Deer Barber-Shop, honramos el arte atemporal de la barbería clásica, fusionándolo con las tendencias contemporáneas. No solo ofrecemos cortes de pelo y afeitados; creamos experiencias. Cada silla es un trono, y cada cliente es tratado con la realeza que merece. Nuestro compromiso es con la calidad, la precisión y la creación de un ambiente donde la camaradería y la confianza florecen.</p>
+                        <h3 class="font-title text-3xl text-white mb-4 mt-8">Compromiso Profesional</h3>
+                         <ul class="list-none space-y-4 text-gray-300">
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-red-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Higiene y Seguridad:</strong> Estándares impecables para tu tranquilidad.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-red-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Productos Premium:</strong> Solo utilizamos las mejores marcas para el cuidado del hombre.</span></li>
+                            <li class="flex items-start"><i data-lucide="check-circle" class="w-5 h-5 text-red-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Atención Personalizada:</strong> Tu estilo es único, nuestra asesoría también.</span></li>
+                        </ul>
+                    </div>
+                    <div class="order-1 md:order-2 flex justify-center items-center">
+                        <div class="relative w-full aspect-square max-w-md">
+                            <!-- 4-quadrant grid -->
+                            <div class="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full rounded-lg overflow-hidden border-2 border-red-700/50 shadow-lg">
+                                <div class="bg-cover bg-center" style="background-image: url('./imagenes/ambiente.png');"></div>
+                                <div class="bg-cover bg-center" style="background-image: url('./imagenes/detalles.png');"></div>
+                                <div class="bg-cover bg-center" style="background-image: url('./imagenes/estilo.png');"></div>
+                                <div class="bg-cover bg-center" style="background-image: url('./imagenes/comunidad.png');"></div>
+                            </div>
+                            <!-- Logo in the center -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-24 h-24 bg-black/80 rounded-full flex items-center justify-center border-4 border-red-700">
+                                     <!-- LOGO - Reemplaza 'Ruta/a/tu/logo.png' con la ubicación de tu archivo -->
+                                    <img src="./imagenes/deer-logo.png" alt="Deer Barber-Shop Logo" class="w-16 h-16">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Servicios Section -->
+        <section id="servicios" class="content-section">
+             <div class="container mx-auto px-6 bg-black/0 p-8 rounded-lg">
+                <div class="text-center mb-12">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">NUESTROS SERVICIOS</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">Cada servicio es un ritual diseñado para resaltar tu carácter y personalidad.</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-8 items-center">
+                    <!-- Columna Izquierda: Iconos y Descripción -->
+                    <div class="flex flex-col text-center">
+                        <!-- Iconos -->
+                        <div id="service-icons" class="grid grid-cols-4 gap-3 self-center mb-8">
+                            <!-- Service icons will be injected here -->
+                        </div>
+                        <!-- Descripción -->
+                        <div>
+                            <h3 id="service-name" class="font-title text-3xl md:text-4xl text-white transition-opacity duration-500 min-h-[80px]"></h3>
+                            <p id="service-description" class="mt-4 mb-8 text-gray-300 leading-relaxed transition-opacity duration-500"></p>
+                            <a href="#contacto" class="nav-link-action bg-red-700 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-105">Agenda Tu Cita</a>
+                        </div>
+                    </div>
+                    <!-- Columna Derecha: Imagen Circular -->
+                    <div class="flex justify-center items-center">
+                         <div id="service-image" class="w-80 h-80 md:w-96 md:h-96 bg-cover bg-center rounded-full border-4 border-red-700/50 shadow-lg transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Recomendaciones Section -->
+        <section id="recomendaciones" class="content-section">
+             <div class="container-fluid mx-auto px-0 bg-black/0 py-8 rounded-lg w-full">
+                <div class="text-center mb-12 px-6">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">LA VOZ DE NUESTROS CLIENTES</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">Experiencias reales de hombres que confían en nuestro arte.</p>
+                </div>
+                 <div class="relative w-full overflow-hidden mask-gradient h-80 flex items-center">
+                    <div id="testimonial-scroller" class="scroller flex items-center space-x-8">
+                        <!-- Testimonials and separators will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sedes Section -->
+        <section id="sedes" class="content-section">
+            <div class="container mx-auto px-6 bg-black/0 p-8 rounded-lg max-w-7xl">
+                <div class="text-center mb-12">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">ENCUÉNTRANOS</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">Acércate a la sede más cercana y vive la experiencia.</p>
+                </div>
+                
+                <!-- Location Selectors -->
+                <div id="location-selectors" class="flex justify-center flex-wrap gap-3 md:gap-4 mb-8 md:mb-12">
+                    <!-- Selector buttons injected here -->
+                </div>
+        
+                <!-- Location Details Grid -->
+                <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+                    <!-- Left Column: Info & Image -->
+                    <div class="flex flex-col gap-6">
+                        <img id="location-image" src="" alt="Imagen de la sede" class="w-full aspect-video object-cover rounded-lg border-2 border-red-700/50 transition-opacity duration-500">
+                        <div class="bg-gray-900/50 p-6 rounded-lg flex-grow">
+                            <h3 id="location-name" class="font-title text-3xl text-white transition-opacity duration-500"></h3>
+                            <p id="location-address" class="text-gray-300 mt-2 transition-opacity duration-500 flex items-start gap-2"><i data-lucide="map-pin" class="w-5 h-5 text-red-600 mt-1 flex-shrink-0"></i><span class="flex-grow"></span></p>
+                            <p id="location-phone" class="text-gray-300 font-semibold mt-2 transition-opacity duration-500 flex items-center gap-2"><i data-lucide="phone" class="w-5 h-5 text-red-600"></i><span></span></p>
+                        </div>
+                    </div>
+        
+                    <!-- Right Column: Map -->
+                    <div class="rounded-lg overflow-hidden border-2 border-red-700/50 shadow-lg shadow-red-900/20 min-h-[400px] lg:min-h-full">
+                        <iframe id="map" class="w-full h-full transition-opacity duration-500" src="" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contacto Section -->
+        <section id="contacto" class="content-section">
+            <div class="container mx-auto px-6 bg-black/0 p-8 rounded-lg">
+                <div class="text-center mb-12">
+                    <h2 class="font-title text-4xl md:text-5xl text-red-700">CONTÁCTANOS</h2>
+                    <p class="max-w-2xl mx-auto mt-4 text-gray-400">¿Tienes alguna pregunta? Envíanos un mensaje.</p>
+                </div>
+                <form action="https://formsubmit.co/juancho0390@gmail.com" method="POST" class="max-w-xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <input class="bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-red-600 transition" type="text" name="name" placeholder="Nombre" required>
+                        <input class="bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-red-600 transition" type="email" name="email" placeholder="Correo Electrónico" required>
+                    </div>
+                    <div class="mb-6">
+                         <input class="bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 w-full focus:outline-none focus:ring-2 focus:ring-red-600 transition" type="tel" name="phone" placeholder="Teléfono">
+                    </div>
+                    <div class="mb-6">
+                        <textarea class="bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 w-full h-32 resize-none focus:outline-none focus:ring-2 focus:ring-red-600 transition" name="message" placeholder="Escribe tu mensaje..." required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="bg-red-700 text-white font-bold py-3 px-12 rounded-lg hover:bg-red-800 transition-all duration-300 transform hover:scale-105">Enviar Mensaje</button>
+                    </div>
+                    <input type="hidden" name="_next" value="https://juancho0390.github.io/Barber-Shop/">
+                    <input type="hidden" name="_captcha" value="false">
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DATA ---
+            const barbers = [
+                { name: 'Jack', signature: 'Black Jack', description: 'Más de 10 años de experiencia, un apasionado de los cortes clásicos y las técnicas tradicionales. Su precisión y atención al detalle aseguran un look impecable que nunca pasa de moda.', image: './imagenes/jack.jpg' },
+                { name: 'John', signature: 'Lil John', description: 'Creativo y a la vanguardia, especializado en cortes modernos, fades perfectos y estilos personalizados. Su enfoque innovador y habilidad para adaptarse a las últimas tendencias hacen de cada visita una experiencia única.', image: './imagenes/john.jpg' },
+                { name: 'Lester', signature: 'Crazy Lester', description: 'Maestro en el arte del cuidado de barbas. Conoce todas las técnicas para perfilar, arreglar y mantener tu barba en perfecto estado. Si buscas un look masculino y bien definido, su experiencia y dedicación te ayudarán.', image: './imagenes/lester.jpg' },
+                { name: 'Mike', signature: 'Magic Mike', description: 'No solo corta cabello, crea arte. Detallista y perfeccionista, combina técnica y creatividad para ofrecer un servicio excepcional. Cada visita se convierte en una obra maestra.', image: './imagenes/mike.jpg' }
+            ];
+            const services = [
+                { name: 'Cortes Clásicos y Modernos', icon: 'scissors', description: 'Recupera la esencia de la masculinidad con cortes que reflejan estilo y carácter.', image: './imagenes/servicio1.jpg' },
+                { name: 'Arreglo de Barba y Bigote', icon: 'user-cog', description: 'Define tu estilo con precisión. Ofrecemos recortes tradicionales, perfilados nítidos y tratamientos especiales.', image: './imagenes/servicio2.jpg' },
+                { name: 'Afeitado Clásico con Navaja', icon: 'gem', description: 'Experimenta el ritual del afeitado como en los viejos tiempos, un proceso relajante que revitaliza tu piel.', image: './imagenes/servicio3.jpg' },
+                { name: 'Tratamientos Capilares', icon: 'sparkles', description: 'Cuidar tu cabello es parte de proyectar una imagen sólida. Ofrecemos soluciones para fortalecer e hidratar.', image: './imagenes/servicio4.jpg' },
+                { name: 'Servicio Premium Spa', icon: 'bath', description: 'Relájate y recarga energías con masajes, faciales refrescantes y tratamientos antiestrés para el hombre moderno.', image: './imagenes/servicio5.jpg' },
+                { name: 'Estilismo Personalizado', icon: 'user-check', description: 'Te asesoramos para que encuentres el estilo que mejor se adapte a tu rostro, estilo de vida y personalidad.', image: './imagenes/servicio6.jpg' },
+                { name: 'Productos Exclusivos', icon: 'package', description: 'Encuentra productos de calidad premium diseñados específicamente para el cuidado masculino y tu imagen impecable.', image: './imagenes/servicio7.jpg' },
+                { name: 'Whisky, Música y Camaradería', icon: 'users', description: 'Sumérgete en un espacio diseñado para hombres, donde la tradición, el estilo y la amistad se encuentran.', image: './imagenes/servicio8.jpg' }
+            ];
+            const locations = [
+                { name: 'Sede Poblado', address: 'Cl 10 #43a-15, El Poblado, Medellín', phone: '+57 328 772 222', map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.401511539481!2d-75.57320178820675!3d6.210657293751321!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44282ba41a1223%3A0x441b86841cf659a!2sCl%2010%20%2343a-15%2C%20El%20Poblado%2C%20Medell%C3%ADn%2C%20El%20Poblado%2C%20Medell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1736996008870!5m2!1ses!2sco', image: './imagenes/sedePoblado.png' },
+                { name: 'Sede Laureles', address: 'Circ. 4 #73-124, Laureles, Medellín', phone: '+57 328 772 333', map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1983.0716173914411!2d-75.59451612791106!3d6.244847493717387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4429189ed12fa5%3A0x25ee111d3749161a!2sHotel%20Asturias%20Medellin!5e0!3m2!1ses!2sco!4v1736996130981!5m2!1ses!2sco', image: './imagenes/sedeLaureles.png' },
+                { name: 'Sede CC El Tesoro', address: 'Cra. 25a #1A sur 45 Local 3027, Medellín', phone: '+57 382 772 222', map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d991.6252131219381!2d-75.55886709776365!3d6.197456693764355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e46829a191ffd75%3A0xd1ba421be16030e3!2sCra.%2025a%20%231a%20Sur%2045%20Local%203027%2C%20El%20Poblado%2C%20Medell%C3%ADn%2C%20El%20Poblado%2C%20Medell%C3%ADn%2C%20Antioquia!5e0!3m2!1ses!2sco!4v1736996265417!5m2!1ses!2sco', image: './imagenes/sedeElTesoro.png' },
+                { name: 'Sede CC Viva Envigado', address: 'Carrera 48 # 32B sur 139 LOCAL 366, Envigado', phone: '+57 397 772 222', map: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2435.502670739083!2d-75.59306430457097!3d6.176792081125159!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e4683d4c79a57ad%3A0x2e13211df72b9f79!2sEl%20Rancherito%20Viva%20Envigado!5e0!3m2!1ses!2sco!4v1736994641154!5m2!1ses!2sco', image: './imagenes/sedeVivaEnvigado.png' }
+            ];
+            const testimonials = [
+                { quote: 'Excelente servicio y atención al detalle. El lugar tiene un ambiente increíble, te sientes como en casa. Totalmente recomendado.', author: 'Carlos R. - Abogado', image: './imagenes/carlosR.png' },
+                { quote: 'Más que un corte, es una experiencia completa. Salgo renovado cada vez que vengo. ¡John es un verdadero artista con las tijeras!', author: 'David G. - Diseñador', image: './imagenes/davidG.png' },
+                { quote: 'El afeitado con navaja es impecable, una técnica que pocos dominan como aquí. Me recuerda a las barberías de antes, pero con un toque moderno y elegante.', author: 'Andrés M. - Empresario', image: './imagenes/andresM.png' },
+                { quote: 'El mejor cuidado para mi barba, sin duda. Lester sabe exactamente lo que hace. El ambiente con música y un buen trago es el plus perfecto.', author: 'Javier P. - Músico', image: './imagenes/javierP.png' }
+            ];
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            function showSection(targetId) {
+                const id = targetId.startsWith('#') ? targetId.substring(1) : targetId;
+                sections.forEach(section => section.classList.toggle('active', section.id === id));
+                navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${id}`));
+                mobileMenu.classList.add('hidden');
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(link.getAttribute('href'));
+                });
+            });
+
+            document.querySelectorAll('.nav-link-action').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showSection(link.getAttribute('href'));
+                });
+            });
+            
+            document.getElementById('mobile-menu-button').addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // --- NOSOTROS SECTION ---
+            const barberImage = document.getElementById('barber-image');
+            const barberName = document.getElementById('barber-name');
+            const barberDesc = document.getElementById('barber-description');
+            const barberSign = document.getElementById('barber-signature');
+            const barberSelectors = document.getElementById('barber-selectors');
+
+            function updateBarberInfo(index) {
+                const barber = barbers[index];
+                [barberImage, barberName, barberDesc, barberSign].forEach(el => el.style.opacity = '0');
+                setTimeout(() => {
+                    barberImage.style.backgroundImage = `url('${barber.image}')`;
+                    barberName.textContent = barber.name;
+                    barberDesc.textContent = barber.description;
+                    barberSign.textContent = barber.signature;
+                    [barberImage, barberName, barberDesc, barberSign].forEach(el => el.style.opacity = '1');
+                }, 300);
+                document.querySelectorAll('#barber-selectors button').forEach((btn, i) => {
+                    btn.classList.toggle('bg-red-700', i === index);
+                    btn.classList.toggle('bg-gray-800', i !== index);
+                });
+            }
+
+            if (barberSelectors) {
+                barbers.forEach((barber, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = barber.name;
+                    button.className = 'py-2 px-6 rounded-lg font-semibold text-white bg-gray-800 hover:bg-red-700 transition-colors duration-300';
+                    button.addEventListener('click', () => updateBarberInfo(index));
+                    barberSelectors.appendChild(button);
+                });
+                updateBarberInfo(0);
+            }
+
+            // --- SERVICIOS SECTION ---
+            const serviceName = document.getElementById('service-name');
+            const serviceDesc = document.getElementById('service-description');
+            const serviceImage = document.getElementById('service-image');
+            const servicesGrid = document.getElementById('service-icons');
+
+            function updateServiceInfo(index) {
+                const service = services[index];
+                [serviceName, serviceDesc, serviceImage].forEach(el => el.style.opacity = '0');
+                setTimeout(() => {
+                    serviceName.textContent = service.name;
+                    serviceDesc.textContent = service.description;
+                    if(serviceImage) serviceImage.style.backgroundImage = `url('${service.image}')`;
+                    [serviceName, serviceDesc, serviceImage].forEach(el => el.style.opacity = '1');
+                }, 300);
+                document.querySelectorAll('#service-icons button').forEach((btn, i) => {
+                    btn.classList.toggle('bg-red-700', i === index);
+                    btn.classList.toggle('border-red-500', i === index);
+                    btn.classList.toggle('bg-gray-900', i !== index);
+                    btn.classList.toggle('border-gray-700', i !== index);
+                });
+            }
+
+            if (servicesGrid) {
+                const servicesToShow = services.slice(0, 8); // Ensure we only show 8 services
+                servicesToShow.forEach((service, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'w-16 h-16 flex items-center justify-center rounded-full border-2 hover:border-red-500 transition-all duration-300 transform hover:scale-110';
+                    button.innerHTML = `<i data-lucide="${service.icon}" class="w-6 h-6 text-gray-300"></i>`;
+                    button.addEventListener('click', () => updateServiceInfo(index));
+                    servicesGrid.appendChild(button);
+                });
+                if (servicesToShow.length > 0) {
+                    updateServiceInfo(0);
+                }
+            }
+
+
+            // --- SEDES SECTION ---
+            const locationSelectors = document.getElementById('location-selectors');
+            const mapFrame = document.getElementById('map');
+            const locationImage = document.getElementById('location-image');
+            const locationName = document.getElementById('location-name');
+            const locationAddress = document.getElementById('location-address').querySelector('span');
+            const locationPhone = document.getElementById('location-phone').querySelector('span');
+            
+            function updateLocationInfo(index) {
+                const loc = locations[index];
+
+                const elementsToFade = [mapFrame, locationImage, locationName, locationAddress.parentElement, locationPhone.parentElement];
+                elementsToFade.forEach(el => el && (el.style.opacity = '0'));
+                
+                setTimeout(() => {
+                    if(mapFrame) mapFrame.src = loc.map;
+                    if(locationImage) locationImage.src = loc.image;
+                    if(locationName) locationName.textContent = loc.name;
+                    if(locationAddress) locationAddress.textContent = loc.address;
+                    if(locationPhone) locationPhone.textContent = loc.phone;
+                    
+                    elementsToFade.forEach(el => el && (el.style.opacity = '1'));
+                }, 300);
+
+                document.querySelectorAll('#location-selectors button').forEach((btn, i) => {
+                    btn.classList.toggle('bg-red-700', i === index);
+                    btn.classList.toggle('text-white', i === index);
+                    btn.classList.toggle('bg-gray-800', i !== index);
+                    btn.classList.toggle('text-gray-400', i !== index);
+                });
+            }
+
+            if (locationSelectors) {
+                locations.forEach((loc, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'py-2 px-5 rounded-lg font-semibold bg-gray-800 text-gray-400 hover:bg-red-700 hover:text-white transition-colors duration-300';
+                    button.textContent = loc.name.replace('Sede ', '').replace('CC ', ''); // Shorten name for buttons
+                    button.addEventListener('click', () => updateLocationInfo(index));
+                    locationSelectors.appendChild(button);
+                });
+                updateLocationInfo(0);
+            }
+
+            // --- RECOMENDACIONES SECTION ---
+            const testimonialScroller = document.getElementById('testimonial-scroller');
+
+            function setupTestimonialScroller() {
+                if (!testimonialScroller) return;
+
+                const testimonialsWithSeparators = [];
+                testimonials.forEach(testimonial => {
+                    // Add testimonial card
+                    testimonialsWithSeparators.push(`
+                        <div class="testimonial-card flex-shrink-0 w-80 bg-gray-900/50 p-6 rounded-lg flex flex-col items-center text-center">
+                            <img src="${testimonial.image}" alt="Foto de ${testimonial.author}" class="w-24 h-24 rounded-full border-4 border-red-700/50 mb-4">
+                            <p class="italic text-gray-300 flex-grow">"${testimonial.quote}"</p>
+                            <p class="font-bold text-white mt-4">- ${testimonial.author}</p>
+                        </div>
+                    `);
+                    // Add separator
+                    testimonialsWithSeparators.push(`
+                        <div class="separator-icon flex-shrink-0 w-20 flex items-center justify-center">
+                            <div class="relative w-12 h-12">
+                                <i data-lucide="scissors" class="scissors w-8 h-8 text-gray-500 absolute top-0 left-0"></i>
+                                <i data-lucide="gem" class="razor w-8 h-8 text-gray-500 absolute bottom-0 right-0"></i>
+                            </div>
+                        </div>
+                    `);
+                });
+                
+                // Duplicate content for seamless loop
+                const originalContent = testimonialsWithSeparators.join('');
+                testimonialScroller.innerHTML = originalContent + originalContent;
+            }
+            
+            setupTestimonialScroller();
+            
+            // --- INITIAL STATE ---
+            showSection('home');
+            lucide.createIcons();
+        });
+    </script>
+
+</body>
+</html>
+
